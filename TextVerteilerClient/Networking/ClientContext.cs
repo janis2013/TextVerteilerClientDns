@@ -26,6 +26,10 @@ namespace TextVerteilerClient.Networking
 
         public event Action<string> OnDataReceived;
 
+        /// <summary>
+        /// To make form visible.
+        /// </summary>
+        public event Action<bool, bool> OnDataReceived2; 
 
 
 
@@ -131,8 +135,6 @@ namespace TextVerteilerClient.Networking
                     if (s != "")
                     {
 
-
-
                         if (this.TextStack.Count() < FormMain.HistoryStackSize)
                         {
                             this.TextStack.Add(s);
@@ -151,11 +153,15 @@ namespace TextVerteilerClient.Networking
 
                         Program.fmMain.SetNewPointerPos(TextStack.Count);
 
-                        Program.fmMain.SetFormVisibility(true);
+                        //Program.fmMain.SetFormVisibility(true,true);
 
                         if (OnDataReceived != null)
                         {
                             OnDataReceived(s);
+                        }
+                        if (OnDataReceived2 != null)
+                        {
+                            OnDataReceived2(true, false);
                         }
                     }
 
@@ -163,7 +169,7 @@ namespace TextVerteilerClient.Networking
 
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
             }

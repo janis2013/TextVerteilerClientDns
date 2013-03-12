@@ -5,13 +5,13 @@ using System.Runtime.InteropServices;
 // Allgemeine Informationen über eine Assembly werden über die folgenden 
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
-[assembly: AssemblyTitle("TextVerteilerClient")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("TextVerteilerClientDns")]
+[assembly: AssemblyDescription("Ein TextVerteiler Client Dns basiert.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("TextVerteilerClient")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("JD")]
 [assembly: AssemblyCulture("")]
 
 // Durch Festlegen von ComVisible auf "false" werden die Typen in dieser Assembly unsichtbar 

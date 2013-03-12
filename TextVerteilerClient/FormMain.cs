@@ -70,16 +70,21 @@ namespace TextVerteilerClient
         {
             //weil visible das hier auslöst
             ResetPosition();
+           
         }
 
         public void IniFormMain()
         {
+            this.Opacity = 0;
             this.Show();
             this.Hide();
+            this.Opacity = 1;
+
             TextHistory = new List<string>();
 
             ResetPosition();
             this.TopMost = true;
+            this.CreateControl();
 
             FormMain.HistoryStackSize = 20;
 
@@ -134,12 +139,13 @@ namespace TextVerteilerClient
             }
         }
 
-        public void SetFormVisibility(bool visible)
+        public void SetFormVisibility(bool visible,bool noch_mal)
         {
-            if (this.InvokeRequired)
+            if (this.InvokeRequired ||noch_mal)
             {
-                Action<bool> set = new Action<bool>(SetFormVisibility);
-                this.Invoke(set, new object[] { visible });
+                Action<bool,bool> set = new Action<bool,bool>(SetFormVisibility);
+                noch_mal = false;
+                this.Invoke(set, new object[] { visible, noch_mal });
             }
             else
             {
@@ -175,6 +181,8 @@ namespace TextVerteilerClient
         {
             Client = new ClientContext(ref TextHistory, MAXBits);
             Client.OnDataReceived += SetText;
+            Client.OnDataReceived2 += SetFormVisibility;
+
             Client.BeginConnect(RemoteIp, this.Port);
 
         }
@@ -206,9 +214,17 @@ namespace TextVerteilerClient
                     if (btnNext.InvokeRequired)
                     {
                         //error ???
+                        int id = System.Threading.Thread.CurrentThread.ManagedThreadId;
+                        //Action set = new Action(SetEnterOpacity);
+                        //this.Invoke(set);
                     }
                 }
-                this.Opacity = 1.0;
+                else
+                {
+                    this.Opacity = 1.0;
+
+                }
+               
             }
             catch (Exception e)
             {
@@ -227,9 +243,16 @@ namespace TextVerteilerClient
                     if (btnNext.InvokeRequired)
                     {
                         //error ???
+                        int id = System.Threading.Thread.CurrentThread.ManagedThreadId;
+                        //Action set = new Action(SetLeaveOpacity);
+                        //this.Invoke(set);
                     }
                 }
-                this.Opacity = LeaveOpacity;
+                else
+                {
+                    this.Opacity = LeaveOpacity;
+                }
+                
             }
             catch (Exception e)
             {
@@ -250,6 +273,7 @@ namespace TextVerteilerClient
             else
             {
                 SetLeaveOpacity();
+                int id = System.Threading.Thread.CurrentThread.ManagedThreadId;
 
                 //nur wenn fenster auch wirklich sichtbar
                 if (this.Visible == true)
