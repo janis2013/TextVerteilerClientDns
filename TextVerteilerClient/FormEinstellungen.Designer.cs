@@ -61,7 +61,7 @@
             this.groupBox1.Size = new System.Drawing.Size(184, 88);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "IP Einstellungen";
+            this.groupBox1.Text = "Dns Einstellungen";
             // 
             // cbServerIps
             // 
@@ -97,9 +97,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(10, 23);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(58, 13);
+            this.label1.Size = new System.Drawing.Size(57, 13);
             this.label1.TabIndex = 7;
-            this.label1.Text = "IP Address";
+            this.label1.Text = "Dns Name";
             // 
             // groupBox2
             // 
