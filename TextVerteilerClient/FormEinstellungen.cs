@@ -92,6 +92,7 @@ namespace TextVerteilerClient
             }
         }
 
+
         public string GetCurrentHostName()
         {
             if (cbServerIps.InvokeRequired)

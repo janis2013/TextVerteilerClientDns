@@ -130,6 +130,19 @@ namespace TextVerteilerClient
 
         }
 
+        public void AppendText(string Text)
+        {
+            if (tbMessage.InvokeRequired)
+            {
+                Action<string> set = new Action<string>(SetText);
+                this.Invoke(set, new object[] { Text });
+            }
+            else
+            {
+                tbMessage.Rtf += Text;
+            }
+        }
+
         public void SetFormText(string Text)
         {
             if (this.InvokeRequired)

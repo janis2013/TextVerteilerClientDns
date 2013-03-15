@@ -42,8 +42,8 @@ namespace TextVerteilerClient.Networking
             try
             {
                 byte[] ReplyMessage = UdpServerSearcher.EndReceive(result, ref BroadcastServer);
-
-                string answer = ReplyMessage.GetString();
+                MessageType empty;
+                string answer = ReplyMessage.GetString(out empty);
                 string ip = "";
 
                 if (answer.Contains("OK"))

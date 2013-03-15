@@ -29,7 +29,11 @@ namespace TextVerteilerClient.Networking
         /// <summary>
         /// To make form visible.
         /// </summary>
-        public event Action<bool, bool> OnDataReceived2; 
+        public event Action<bool, bool> OnDataReceived2;
+
+        private StringBuilder CurrentString = new StringBuilder();
+
+        private MessageType LastReceivedMessageType;
 
 
 
@@ -121,6 +125,8 @@ namespace TextVerteilerClient.Networking
 
         public void OnTextReceived(IAsyncResult result)
         {
+
+            MessageType isSpltttedMessage = MessageType.plain;
             try
             {
 
@@ -130,14 +136,21 @@ namespace TextVerteilerClient.Networking
                 {
                     socket.EndReceiveFrom(result, ref p);
 
-                    string s = Buffer.GetString();
+                    string s = Buffer.GetString(out isSpltttedMessage);
 
-                    if (s != "")
+                    if (isSpltttedMessage == MessageType.multiple)
                     {
+                        //wait for other pieces
+                        this.CurrentString.Append(s);
+                    }
+                    else if (isSpltttedMessage == MessageType.last)
+                    {
+
+                        this.CurrentString.Append(s);
 
                         if (this.TextStack.Count() < FormMain.HistoryStackSize)
                         {
-                            this.TextStack.Add(s);
+                            this.TextStack.Add(CurrentString.ToString());
                         }
                         else if (this.TextStack.Count() >= FormMain.HistoryStackSize)
                         {
@@ -147,21 +160,55 @@ namespace TextVerteilerClient.Networking
                                 this.TextStack.RemoveAt(0);
                             }
 
-                            this.TextStack.Add(s);
+                            this.TextStack.Add(CurrentString.ToString());
                         }
-
 
                         Program.fmMain.SetNewPointerPos(TextStack.Count);
 
-                        //Program.fmMain.SetFormVisibility(true,true);
-
                         if (OnDataReceived != null)
                         {
-                            OnDataReceived(s);
+                            OnDataReceived(CurrentString.ToString());
                         }
                         if (OnDataReceived2 != null)
                         {
                             OnDataReceived2(true, false);
+                        }
+
+                        this.CurrentString = new StringBuilder();
+                    }
+                    else
+                    {
+                        if (s != "")
+                        {
+
+                            if (this.TextStack.Count() < FormMain.HistoryStackSize)
+                            {
+                                this.TextStack.Add(s);
+                            }
+                            else if (this.TextStack.Count() >= FormMain.HistoryStackSize)
+                            {
+                                //am anfang löschen bis passt
+                                while (this.TextStack.Count() >= FormMain.HistoryStackSize)
+                                {
+                                    this.TextStack.RemoveAt(0);
+                                }
+
+                                this.TextStack.Add(s);
+                            }
+
+
+                            Program.fmMain.SetNewPointerPos(TextStack.Count);
+
+                            //Program.fmMain.SetFormVisibility(true,true);
+
+                            if (OnDataReceived != null)
+                            {
+                                OnDataReceived(s);
+                            }
+                            if (OnDataReceived2 != null)
+                            {
+                                OnDataReceived2(true, false);
+                            }
                         }
                     }
 
@@ -173,6 +220,9 @@ namespace TextVerteilerClient.Networking
             {
 
             }
+
+
+            LastReceivedMessageType = isSpltttedMessage;
 
             StartReceive(); //receive next
 
@@ -200,22 +250,61 @@ namespace TextVerteilerClient.Networking
 
     }
 
+    public enum MessageType
+    {
+        plain,
+
+        //more than 1
+        multiple,
+        last
+    }
 
     public static class ExtString
     {
         //[System.Diagnostics.DebuggerHidden()]
-        public static string GetString(this byte[] Text)
+        public static string GetString(this byte[] Text,out MessageType SplittetMessage)
         {
+
             StringBuilder b = new StringBuilder();
 
-            for (int i = 0; i < Text.Length; i++)
+            if (Text[0] == 2) //wegen isSplittetMessage bytes
             {
-                if (Text[i] != 0)
+                SplittetMessage = MessageType.multiple;
+                for (int i = 2; i < Text.Length; i++)
                 {
-                    char c = (char)Text[i];
-                    b.Append(c);
+                    if (Text[i] != 0)
+                    {
+                        char c = (char)Text[i];
+                        b.Append(c);
+                    }
                 }
             }
+            else if (Text[0] == 3)
+            {
+                SplittetMessage = MessageType.last;
+                for (int i = 2; i < Text.Length; i++)
+                {
+                    if (Text[i] != 0)
+                    {
+                        char c = (char)Text[i];
+                        b.Append(c);
+                    }
+                }
+            }
+            else
+            {
+                SplittetMessage = MessageType.plain;
+                for (int i = 0; i < Text.Length; i++)
+                {
+                    if (Text[i] != 0)
+                    {
+                        char c = (char)Text[i];
+                        b.Append(c);
+                    }
+                }
+            }
+
+            
 
             return b.ToString();
 
