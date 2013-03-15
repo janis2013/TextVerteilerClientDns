@@ -165,7 +165,7 @@ namespace TextVerteilerClient.Networking
                         }
                     }
 
-                    StartReceive(); //receive next
+                    //StartReceive(); //receive next
 
                 }
             }
@@ -173,6 +173,9 @@ namespace TextVerteilerClient.Networking
             {
 
             }
+
+            StartReceive(); //receive next
+
         }
 
 
