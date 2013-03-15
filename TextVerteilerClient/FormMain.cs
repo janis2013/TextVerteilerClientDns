@@ -26,6 +26,7 @@ using TextVerteilerClient.Networking;
 
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 
 
@@ -33,6 +34,7 @@ namespace TextVerteilerClient
 {
     public partial class FormMain : Form
     {
+
 
         public static string IPADDRESS = "192.168.30.51";
 
@@ -64,6 +66,8 @@ namespace TextVerteilerClient
         public FormMain()
         {
             InitializeComponent();
+
+            
         }
 
         public void FormMain_Load(object sender, EventArgs e)
