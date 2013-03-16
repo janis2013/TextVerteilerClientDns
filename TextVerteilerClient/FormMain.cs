@@ -59,6 +59,8 @@ namespace TextVerteilerClient
 
         public static int HistoryStackSize { get; set; }
 
+        public static string ConnectionString { get;set; }
+
 
         public int CheckStatusCounter { get; set; } //0 to 10
 
@@ -67,18 +69,20 @@ namespace TextVerteilerClient
         {
             InitializeComponent();
 
-            
+            tbMessage.AllowDrop = true;
         }
 
         public void FormMain_Load(object sender, EventArgs e)
         {
             //weil visible das hier auslöst
             ResetPosition();
-           
+            this.TopMost = true;
         }
 
         public void IniFormMain()
         {
+
+
             this.Opacity = 0;
             this.Show();
             this.Hide();
@@ -89,8 +93,10 @@ namespace TextVerteilerClient
             ResetPosition();
             this.TopMost = true;
             this.CreateControl();
+            this.TopMost = true;
 
             FormMain.HistoryStackSize = 20;
+
 
             //string ip = Config.LoadIp();
 
@@ -456,7 +462,8 @@ namespace TextVerteilerClient
             if (e.Control && e.KeyCode == Keys.A)
             {
                 tbMessage.SelectAll();
-            }
+            }  
+
         }
 
 

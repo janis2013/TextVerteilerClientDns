@@ -89,6 +89,7 @@ namespace TextVerteilerClient.Networking
                 //ok finished
                 socket.EndConnect(result);
 
+                FormMain.ConnectionString = "Connected to " + Program.fmEinstellungen.GetCurrentHostName();
                 //Program.fmMain.SetFormText("Connected to " + socket.RemoteEndPoint.ToString().Split(':')[0]);
                 Program.fmMain.SetFormText("Connected to " + Program.fmEinstellungen.GetCurrentHostName());
 
@@ -119,7 +120,7 @@ namespace TextVerteilerClient.Networking
             }
             catch (Exception)
             {
-                throw;
+                
             }
         }
 
@@ -142,6 +143,7 @@ namespace TextVerteilerClient.Networking
                     {
                         //wait for other pieces
                         this.CurrentString.Append(s);
+                        Program.fmMain.SetFormText("Receiving... | " + FormMain.ConnectionString);
                     }
                     else if (isSpltttedMessage == MessageType.last)
                     {
@@ -174,6 +176,7 @@ namespace TextVerteilerClient.Networking
                             OnDataReceived2(true, false);
                         }
 
+                        Program.fmMain.SetFormText(FormMain.ConnectionString);
                         this.CurrentString = new StringBuilder();
                     }
                     else
