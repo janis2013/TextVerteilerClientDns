@@ -38,6 +38,10 @@ namespace TextVerteilerClient
 
         public static string IPADDRESS = "192.168.30.51";
 
+        public static int MaxReconnectionsTries = 12;
+
+        public const int CheckReconnectAfterXSeconds = 5;//aller 5 Sekunden Wiederverbinden versuchen 
+
         private int Port = 8008;
 
         public ClientContext Client { get; set; }
@@ -59,11 +63,16 @@ namespace TextVerteilerClient
 
         public static int HistoryStackSize { get; set; }
 
-        public static string ConnectionString { get;set; }
+        public static string ConnectionString { get; set; }
 
 
         public int CheckStatusCounter { get; set; } //0 to 10
 
+        public static int TryReconnectCounter = 0;
+
+        public int CheckReconnectionCounter = 0;
+
+        public static bool Reconnecting = false;
 
         public FormMain()
         {
@@ -107,7 +116,7 @@ namespace TextVerteilerClient
 
             UdpClientcontext = new UdpClientContext();
 
-            
+
         }
 
 
@@ -162,11 +171,11 @@ namespace TextVerteilerClient
             }
         }
 
-        public void SetFormVisibility(bool visible,bool noch_mal)
+        public void SetFormVisibility(bool visible, bool noch_mal)
         {
-            if (this.InvokeRequired ||noch_mal)
+            if (this.InvokeRequired || noch_mal)
             {
-                Action<bool,bool> set = new Action<bool,bool>(SetFormVisibility);
+                Action<bool, bool> set = new Action<bool, bool>(SetFormVisibility);
                 noch_mal = false;
                 this.Invoke(set, new object[] { visible, noch_mal });
             }
@@ -200,21 +209,42 @@ namespace TextVerteilerClient
             }
         }
 
-        public void Connect(IPAddress RemoteIp)
+        public void Connect(IPAddress RemoteIp, bool Reconnect)
         {
             Client = new ClientContext(ref TextHistory, MAXBits);
             Client.OnDataReceived += SetText;
             Client.OnDataReceived2 += SetFormVisibility;
 
-            Client.BeginConnect(RemoteIp, this.Port);
+            Client.BeginConnect(RemoteIp, this.Port, Reconnect);
 
         }
 
-        public void Disconnect()
+
+        public void DisconnectByButton()
         {
             if (Client != null)
             {
                 Client.Close();
+                Client = null;
+            }
+        }
+
+        public void DisconnectByRemoteFault(string Try)
+        {
+
+            //Program.fmEinstellungen.btnDisconnect_Click(null, new EventArgs());
+
+            SetFormText("Reconnecting...Try " + Try);
+
+            //Program.fmEinstellungen.SetBtnConnectVisible(true);
+            //Program.fmEinstellungen.SetBtnDisconnectVisible(false);
+
+            Client.Close();
+            Client = null;
+
+            if (TryReconnectCounter == 0)
+            {
+                TryReconnectCounter = MaxReconnectionsTries; // 5
             }
 
         }
@@ -247,7 +277,7 @@ namespace TextVerteilerClient
                     this.Opacity = 1.0;
 
                 }
-               
+
             }
             catch (Exception e)
             {
@@ -275,7 +305,7 @@ namespace TextVerteilerClient
                 {
                     this.Opacity = LeaveOpacity;
                 }
-                
+
             }
             catch (Exception e)
             {
@@ -324,9 +354,24 @@ namespace TextVerteilerClient
                 {
                     if (!Client.isConnected())
                     {
-                        Program.fmEinstellungen.btnDisconnect_Click(null, new EventArgs());
-                        Client.Close();
-                        Client = null;
+                       // this.SetText("Waiting for Server");
+                        if (TryReconnectCounter == 0 && Reconnecting == false)
+                        {
+                            Reconnecting = true;
+                            DisconnectByRemoteFault("1/" + MaxReconnectionsTries);
+                        }
+                        else if (TryReconnectCounter == 0)
+                        {
+                            Reconnecting = false;
+                            TryReconnectCounter = -1;
+                        }
+                        else
+                        {
+                            if (Reconnecting)
+                            {
+                                DisconnectByRemoteFault(((MaxReconnectionsTries + 1) - TryReconnectCounter) + "/" + MaxReconnectionsTries);
+                            }
+                        }
                     }
                     else
                     {
@@ -334,9 +379,23 @@ namespace TextVerteilerClient
                     }
                 }
 
-
                 this.CheckStatusCounter = 0;
             }
+
+
+            if (TryReconnectCounter > 0)
+            {
+                if (CheckReconnectionCounter * 100 >= CheckReconnectAfterXSeconds * 1000)
+                {
+                    //try to connect
+                    Program.fmEinstellungen.Reconnect(((MaxReconnectionsTries + 1) - TryReconnectCounter) + "/" + MaxReconnectionsTries);
+                    TryReconnectCounter--;
+                    CheckReconnectionCounter = 0;
+                    this.CheckStatusCounter = 0; //to save this 1 second
+                }
+                CheckReconnectionCounter++;
+            }
+
             this.CheckStatusCounter++;
 
         }
@@ -353,7 +412,7 @@ namespace TextVerteilerClient
 
         public void Shutdown()
         {
-            Disconnect();
+            DisconnectByButton();
             notifyIconFmMain.Dispose();
             Program.ExitAndSaveIp();
         }
@@ -453,7 +512,7 @@ namespace TextVerteilerClient
             {
 
             }
-            
+
 
         }
 
@@ -462,7 +521,7 @@ namespace TextVerteilerClient
             if (e.Control && e.KeyCode == Keys.A)
             {
                 tbMessage.SelectAll();
-            }  
+            }
 
         }
 

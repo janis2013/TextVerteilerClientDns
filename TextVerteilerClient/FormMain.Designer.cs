@@ -127,7 +127,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "FormMain";
             this.ShowInTaskbar = false;
-            this.Text = "Text";
+            this.Text = "Waiting for Server";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.contextMenuStripMenu.ResumeLayout(false);

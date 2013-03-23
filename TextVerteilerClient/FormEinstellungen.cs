@@ -57,7 +57,44 @@ namespace TextVerteilerClient
 
         public void btnConnect_Click(object sender, EventArgs e)
         {
+            try
+            {
+                FormMain.TryReconnectCounter = 0;
+                FormMain.Reconnecting = false;
+                if (cbServerIps.Items.Count > 0)
+                {
 
+                    if (cbServerIps.SelectedIndex == -1)
+                    {
+                        cbServerIps.SelectedIndex = 0;
+                    }
+                    IPAddress tempIp;
+
+                    if (IPAddress.TryParse(Program.fmMain.UdpClientcontext.KnownIPs[cbServerIps.SelectedIndex], out tempIp))
+                    {
+                        Program.fmMain.SetFormText("Connecting...");
+                        Program.fmMain.Connect(tempIp,true);
+
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Unbekannter Fehler!", "Fehler");
+                    }
+
+                    btnDisconnect.Enabled = true;
+                    btnConnect.Enabled = false;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public void Reconnect(string Try)
+        {
             try
             {
                 if (cbServerIps.Items.Count > 0)
@@ -71,8 +108,8 @@ namespace TextVerteilerClient
 
                     if (IPAddress.TryParse(Program.fmMain.UdpClientcontext.KnownIPs[cbServerIps.SelectedIndex], out tempIp))
                     {
-                        Program.fmMain.SetFormText("Connecting...");
-                        Program.fmMain.Connect(tempIp);
+                        Program.fmMain.SetFormText("Reconnecting...Try " + Try);
+                        Program.fmMain.Connect(tempIp,true);
 
 
                     }
@@ -93,6 +130,8 @@ namespace TextVerteilerClient
         }
 
 
+
+
         public string GetCurrentHostName()
         {
             if (cbServerIps.InvokeRequired)
@@ -110,8 +149,9 @@ namespace TextVerteilerClient
 
         public void btnDisconnect_Click(object sender, EventArgs e)
         {
-
-            Program.fmMain.Disconnect();
+            FormMain.TryReconnectCounter = -1;
+            FormMain.Reconnecting = false;
+            Program.fmMain.DisconnectByButton();
             Program.fmMain.SetFormText("Disconnected");
 
             btnConnect.Enabled = true;
@@ -119,6 +159,19 @@ namespace TextVerteilerClient
 
         }
 
+        public void SetButtonConnect(bool enable)
+        {
+            if (btnConnect.InvokeRequired)
+            {
+                Action<bool> set = new Action<bool>(SetButtonConnect);
+                this.Invoke(set, new object[] { enable });
+            }
+            else
+            {
+                btnConnect.Enabled = enable;
+                btnDisconnect.Enabled = !enable;
+            }
+        }
 
         public void SetBtnConnectVisible(bool Visible)
         {
@@ -168,6 +221,22 @@ namespace TextVerteilerClient
         private void numHistoryStack_ValueChanged(object sender, EventArgs e)
         {
             FormMain.HistoryStackSize = (int)numHistoryStack.Value;
+        }
+
+        private void numReconnectionTries_ValueChanged(object sender, EventArgs e)
+        {
+            FormMain.MaxReconnectionsTries = (int)numReconnectionTries.Value;
+        }
+
+        private void btnStopReconnecting_Click(object sender, EventArgs e)
+        {
+            FormMain.TryReconnectCounter = -1;
+            FormMain.Reconnecting = false;
+            Program.fmMain.DisconnectByButton();
+            Program.fmMain.SetFormText("Disconnected");
+
+            btnConnect.Enabled = true;
+            btnDisconnect.Enabled = false;
         }
     }
 }

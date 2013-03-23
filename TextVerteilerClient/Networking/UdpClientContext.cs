@@ -70,6 +70,8 @@ namespace TextVerteilerClient.Networking
 
                         }
                     }
+                    //found a server...
+                    //Program.fmEinstellungen.btnConnect_Click(null, new EventArgs());
 
 
                 }

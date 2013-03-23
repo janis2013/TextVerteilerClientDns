@@ -41,6 +41,10 @@
             this.numAutomatischVerstecken = new System.Windows.Forms.NumericUpDown();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.numHistoryStack = new System.Windows.Forms.NumericUpDown();
+            this.numReconnectionTries = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.btnStopReconnecting = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numOpcaity)).BeginInit();
@@ -48,6 +52,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.numAutomatischVerstecken)).BeginInit();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numHistoryStack)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numReconnectionTries)).BeginInit();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -216,11 +222,66 @@
             0});
             this.numHistoryStack.ValueChanged += new System.EventHandler(this.numHistoryStack_ValueChanged);
             // 
+            // numReconnectionTries
+            // 
+            this.numReconnectionTries.Location = new System.Drawing.Point(211, 14);
+            this.numReconnectionTries.Maximum = new decimal(new int[] {
+            120,
+            0,
+            0,
+            0});
+            this.numReconnectionTries.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numReconnectionTries.Name = "numReconnectionTries";
+            this.numReconnectionTries.Size = new System.Drawing.Size(62, 20);
+            this.numReconnectionTries.TabIndex = 11;
+            this.numReconnectionTries.Value = new decimal(new int[] {
+            12,
+            0,
+            0,
+            0});
+            this.numReconnectionTries.ValueChanged += new System.EventHandler(this.numReconnectionTries_ValueChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 17);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(187, 13);
+            this.label2.TabIndex = 12;
+            this.label2.Text = "Anzahl erneuter Verbindungsversuche";
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.btnStopReconnecting);
+            this.groupBox5.Controls.Add(this.label2);
+            this.groupBox5.Controls.Add(this.numReconnectionTries);
+            this.groupBox5.Location = new System.Drawing.Point(12, 170);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(287, 67);
+            this.groupBox5.TabIndex = 13;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Wiederverbinden";
+            // 
+            // btnStopReconnecting
+            // 
+            this.btnStopReconnecting.Location = new System.Drawing.Point(14, 40);
+            this.btnStopReconnecting.Name = "btnStopReconnecting";
+            this.btnStopReconnecting.Size = new System.Drawing.Size(259, 23);
+            this.btnStopReconnecting.TabIndex = 13;
+            this.btnStopReconnecting.Text = "Stoppe Verbindungsversuche";
+            this.btnStopReconnecting.UseVisualStyleBackColor = true;
+            this.btnStopReconnecting.Click += new System.EventHandler(this.btnStopReconnecting_Click);
+            // 
             // FormEinstellungen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(312, 178);
+            this.ClientSize = new System.Drawing.Size(312, 249);
+            this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.btnResetPosition);
@@ -241,6 +302,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.numAutomatischVerstecken)).EndInit();
             this.groupBox4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numHistoryStack)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numReconnectionTries)).EndInit();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -260,5 +324,9 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.NumericUpDown numHistoryStack;
         internal System.Windows.Forms.ComboBox cbServerIps;
+        private System.Windows.Forms.NumericUpDown numReconnectionTries;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Button btnStopReconnecting;
     }
 }

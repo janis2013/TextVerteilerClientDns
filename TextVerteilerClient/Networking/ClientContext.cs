@@ -20,7 +20,7 @@ namespace TextVerteilerClient.Networking
 
         public AsyncCallback BeginReceiveFromCallback { get; private set; }
 
-        IPEndPoint Server;
+        //IPEndPoint Server;
 
         public List<string> TextStack { get; private set; }
 
@@ -35,7 +35,7 @@ namespace TextVerteilerClient.Networking
 
         private MessageType LastReceivedMessageType;
 
-
+        public bool ConnectionRequieredByReconnection { get; private set; }
 
         public ClientContext(ref List<string> TextHistory, int BufferSize)
         {
@@ -43,7 +43,7 @@ namespace TextVerteilerClient.Networking
 
             this.TextStack = TextHistory;
 
-            Server = new IPEndPoint(IPAddress.Loopback, 8008);
+            //Server = new IPEndPoint(IPAddress.Loopback, 8008);
 
             BeginConnectCallback = new AsyncCallback(OnConnect);
 
@@ -57,8 +57,9 @@ namespace TextVerteilerClient.Networking
         }
 
 
-        public void BeginConnect(IPAddress ipaddress, int port)
+        public void BeginConnect(IPAddress ipaddress, int port,bool ByReconnection)
         {
+            this.ConnectionRequieredByReconnection = ByReconnection;
             try
             {
                 socket.BeginConnect(ipaddress, port, BeginConnectCallback, null);
@@ -89,17 +90,29 @@ namespace TextVerteilerClient.Networking
                 //ok finished
                 socket.EndConnect(result);
 
+
+                if (this.ConnectionRequieredByReconnection)
+                {
+                    FormMain.TryReconnectCounter = 0;
+                    FormMain.Reconnecting = false;
+                }
+
                 FormMain.ConnectionString = "Connected to " + Program.fmEinstellungen.GetCurrentHostName();
                 //Program.fmMain.SetFormText("Connected to " + socket.RemoteEndPoint.ToString().Split(':')[0]);
                 Program.fmMain.SetFormText("Connected to " + Program.fmEinstellungen.GetCurrentHostName());
+
 
                 StartReceive();
             }
             catch (Exception e)
             {
-                Program.fmMain.SetFormText("Verbindungsfehler");
-                Program.fmEinstellungen.SetBtnConnectVisible(true);
-                Program.fmEinstellungen.SetBtnDisconnectVisible(false);
+                Program.fmMain.SetFormText("Connection Error");
+
+                if (!this.ConnectionRequieredByReconnection)
+                {
+                    Program.fmEinstellungen.SetBtnConnectVisible(true);
+                    Program.fmEinstellungen.SetBtnDisconnectVisible(false);
+                }
             }
 
         }
