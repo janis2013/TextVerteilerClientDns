@@ -93,7 +93,7 @@ namespace TextVerteilerClient.Networking
 
                 if (this.ConnectionRequieredByReconnection)
                 {
-                    FormMain.TryReconnectCounter = 0;
+                   // FormMain.TryReconnectCounter = 0;
                     FormMain.Reconnecting = false;
                 }
 

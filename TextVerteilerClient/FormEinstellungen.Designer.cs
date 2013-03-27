@@ -45,6 +45,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.btnStopReconnecting = new System.Windows.Forms.Button();
+            this.rbReconnectIfTime = new System.Windows.Forms.RadioButton();
+            this.rbReconnectIfServer = new System.Windows.Forms.RadioButton();
+            this.groupBoxReconnectIfTime = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numOpcaity)).BeginInit();
@@ -54,6 +57,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numHistoryStack)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numReconnectionTries)).BeginInit();
             this.groupBox5.SuspendLayout();
+            this.groupBoxReconnectIfTime.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -76,6 +80,7 @@
             this.cbServerIps.Name = "cbServerIps";
             this.cbServerIps.Size = new System.Drawing.Size(101, 21);
             this.cbServerIps.TabIndex = 1;
+            this.cbServerIps.SelectedIndexChanged += new System.EventHandler(this.cbServerIps_SelectedIndexChanged);
             // 
             // btnDisconnect
             // 
@@ -90,6 +95,7 @@
             // 
             // btnConnect
             // 
+            this.btnConnect.Enabled = false;
             this.btnConnect.Location = new System.Drawing.Point(14, 46);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(68, 33);
@@ -224,7 +230,7 @@
             // 
             // numReconnectionTries
             // 
-            this.numReconnectionTries.Location = new System.Drawing.Point(211, 14);
+            this.numReconnectionTries.Location = new System.Drawing.Point(205, 14);
             this.numReconnectionTries.Maximum = new decimal(new int[] {
             120,
             0,
@@ -248,7 +254,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 17);
+            this.label2.Location = new System.Drawing.Point(9, 17);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(187, 13);
             this.label2.TabIndex = 12;
@@ -256,19 +262,19 @@
             // 
             // groupBox5
             // 
-            this.groupBox5.Controls.Add(this.btnStopReconnecting);
-            this.groupBox5.Controls.Add(this.label2);
-            this.groupBox5.Controls.Add(this.numReconnectionTries);
+            this.groupBox5.Controls.Add(this.groupBoxReconnectIfTime);
+            this.groupBox5.Controls.Add(this.rbReconnectIfServer);
+            this.groupBox5.Controls.Add(this.rbReconnectIfTime);
             this.groupBox5.Location = new System.Drawing.Point(12, 170);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(287, 67);
+            this.groupBox5.Size = new System.Drawing.Size(287, 68);
             this.groupBox5.TabIndex = 13;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Wiederverbinden";
             // 
             // btnStopReconnecting
             // 
-            this.btnStopReconnecting.Location = new System.Drawing.Point(14, 40);
+            this.btnStopReconnecting.Location = new System.Drawing.Point(8, 39);
             this.btnStopReconnecting.Name = "btnStopReconnecting";
             this.btnStopReconnecting.Size = new System.Drawing.Size(259, 23);
             this.btnStopReconnecting.TabIndex = 13;
@@ -276,11 +282,49 @@
             this.btnStopReconnecting.UseVisualStyleBackColor = true;
             this.btnStopReconnecting.Click += new System.EventHandler(this.btnStopReconnecting_Click);
             // 
+            // rbReconnectIfTime
+            // 
+            this.rbReconnectIfTime.AutoSize = true;
+            this.rbReconnectIfTime.Location = new System.Drawing.Point(9, 42);
+            this.rbReconnectIfTime.Name = "rbReconnectIfTime";
+            this.rbReconnectIfTime.Size = new System.Drawing.Size(154, 17);
+            this.rbReconnectIfTime.TabIndex = 14;
+            this.rbReconnectIfTime.Text = "Wiederverbinden nach Zeit";
+            this.rbReconnectIfTime.UseVisualStyleBackColor = true;
+            this.rbReconnectIfTime.CheckedChanged += new System.EventHandler(this.rbReconnectIfTime_CheckedChanged);
+            // 
+            // rbReconnectIfServer
+            // 
+            this.rbReconnectIfServer.AutoSize = true;
+            this.rbReconnectIfServer.Checked = true;
+            this.rbReconnectIfServer.Location = new System.Drawing.Point(9, 19);
+            this.rbReconnectIfServer.Name = "rbReconnectIfServer";
+            this.rbReconnectIfServer.Size = new System.Drawing.Size(219, 17);
+            this.rbReconnectIfServer.TabIndex = 15;
+            this.rbReconnectIfServer.TabStop = true;
+            this.rbReconnectIfServer.Text = "Wiederverbinden wenn Server erreichbar";
+            this.rbReconnectIfServer.UseVisualStyleBackColor = true;
+            this.rbReconnectIfServer.CheckedChanged += new System.EventHandler(this.rbReconnectIfServer_CheckedChanged);
+            // 
+            // groupBoxReconnectIfTime
+            // 
+            this.groupBoxReconnectIfTime.Controls.Add(this.label2);
+            this.groupBoxReconnectIfTime.Controls.Add(this.numReconnectionTries);
+            this.groupBoxReconnectIfTime.Controls.Add(this.btnStopReconnecting);
+            this.groupBoxReconnectIfTime.Enabled = false;
+            this.groupBoxReconnectIfTime.Location = new System.Drawing.Point(6, 69);
+            this.groupBoxReconnectIfTime.Name = "groupBoxReconnectIfTime";
+            this.groupBoxReconnectIfTime.Size = new System.Drawing.Size(275, 77);
+            this.groupBoxReconnectIfTime.TabIndex = 16;
+            this.groupBoxReconnectIfTime.TabStop = false;
+            this.groupBoxReconnectIfTime.Text = "Wiederverbinden nach Zeit";
+            this.groupBoxReconnectIfTime.Visible = false;
+            // 
             // FormEinstellungen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(312, 249);
+            this.ClientSize = new System.Drawing.Size(312, 247);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -305,6 +349,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.numReconnectionTries)).EndInit();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
+            this.groupBoxReconnectIfTime.ResumeLayout(false);
+            this.groupBoxReconnectIfTime.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -328,5 +374,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button btnStopReconnecting;
+        private System.Windows.Forms.GroupBox groupBoxReconnectIfTime;
+        private System.Windows.Forms.RadioButton rbReconnectIfServer;
+        private System.Windows.Forms.RadioButton rbReconnectIfTime;
     }
 }

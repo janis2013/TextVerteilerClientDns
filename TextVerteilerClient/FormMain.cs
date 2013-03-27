@@ -38,9 +38,9 @@ namespace TextVerteilerClient
 
         public static string IPADDRESS = "192.168.30.51";
 
-        public static int MaxReconnectionsTries = 12;
+       // public static int MaxReconnectionsTries = 12;
 
-        public const int CheckReconnectAfterXSeconds = 5;//aller 5 Sekunden Wiederverbinden versuchen 
+       // public const int CheckReconnectAfterXSeconds = 5;//aller 5 Sekunden Wiederverbinden versuchen 
 
         private int Port = 8008;
 
@@ -68,11 +68,19 @@ namespace TextVerteilerClient
 
         public int CheckStatusCounter { get; set; } //0 to 10
 
-        public static int TryReconnectCounter = 0;
+       // public static int TryReconnectCounter = 0;
 
-        public int CheckReconnectionCounter = 0;
+       // public int CheckReconnectionCounter = 0;
+
+
 
         public static bool Reconnecting = false;
+
+        public static bool WaitForServer = true;
+
+        public static List<string> KnownDns = new List<string>();
+
+
 
         public FormMain()
         {
@@ -185,6 +193,7 @@ namespace TextVerteilerClient
             }
         }
 
+
         public void AddServerIpToCombobox(string Ip)
         {
             if (Program.fmEinstellungen.cbServerIps.InvokeRequired)
@@ -194,6 +203,7 @@ namespace TextVerteilerClient
             }
             else
             {
+                KnownDns.Add(Ip);
                 if (Program.fmEinstellungen.cbServerIps.Items.Count == 0)
                 {
                     Program.fmEinstellungen.cbServerIps.Items.Add(Ip);
@@ -242,10 +252,10 @@ namespace TextVerteilerClient
             Client.Close();
             Client = null;
 
-            if (TryReconnectCounter == 0)
-            {
-                TryReconnectCounter = MaxReconnectionsTries; // 5
-            }
+            //if (TryReconnectCounter == 0)
+            //{
+            //    TryReconnectCounter = MaxReconnectionsTries; // 5
+            //}
 
         }
 
@@ -316,6 +326,11 @@ namespace TextVerteilerClient
 
         }
 
+        public void StopReconnecting()
+        {
+            Reconnecting = false;
+           // TryReconnectCounter = -1;
+        }
 
         private void UpdateTimer_Tick(object sender, EventArgs e)
         {
@@ -354,24 +369,42 @@ namespace TextVerteilerClient
                 {
                     if (!Client.isConnected())
                     {
-                       // this.SetText("Waiting for Server");
-                        if (TryReconnectCounter == 0 && Reconnecting == false)
+
+                        switch (FormMain.WaitForServer)
                         {
-                            Reconnecting = true;
-                            DisconnectByRemoteFault("1/" + MaxReconnectionsTries);
+                            case true:
+                                this.SetFormText("Waiting for Server " + KnownDns[UdpClientContext.SelectedIP]);
+                                Reconnecting = true;
+                                //DisconnectByButton();
+                                break;
+
+                            case false:
+                               
+                                //if (TryReconnectCounter == 0 && Reconnecting == false)
+                                //{
+                                //    Reconnecting = true;
+                                //    DisconnectByRemoteFault("1/" + MaxReconnectionsTries);
+                                //}
+                                //else if (TryReconnectCounter == 0)
+                                //{
+                                //    //Reconnecting = false;
+                                //    //TryReconnectCounter = -1;
+                                //    StopReconnecting();
+                                //}
+                                //else
+                                //{
+                                //    if (Reconnecting)
+                                //    {
+                                //        DisconnectByRemoteFault(((MaxReconnectionsTries + 1) - TryReconnectCounter) + "/" + MaxReconnectionsTries);
+                                //    }
+                                //}
+
+                                Program.fmEinstellungen.btnDisconnect_Click(this, new EventArgs());
+                                break;
+                            default:
+                                break;
                         }
-                        else if (TryReconnectCounter == 0)
-                        {
-                            Reconnecting = false;
-                            TryReconnectCounter = -1;
-                        }
-                        else
-                        {
-                            if (Reconnecting)
-                            {
-                                DisconnectByRemoteFault(((MaxReconnectionsTries + 1) - TryReconnectCounter) + "/" + MaxReconnectionsTries);
-                            }
-                        }
+                       
                     }
                     else
                     {
@@ -383,18 +416,18 @@ namespace TextVerteilerClient
             }
 
 
-            if (TryReconnectCounter > 0)
-            {
-                if (CheckReconnectionCounter * 100 >= CheckReconnectAfterXSeconds * 1000)
-                {
-                    //try to connect
-                    Program.fmEinstellungen.Reconnect(((MaxReconnectionsTries + 1) - TryReconnectCounter) + "/" + MaxReconnectionsTries);
-                    TryReconnectCounter--;
-                    CheckReconnectionCounter = 0;
-                    this.CheckStatusCounter = 0; //to save this 1 second
-                }
-                CheckReconnectionCounter++;
-            }
+            //if (TryReconnectCounter > 0)
+            //{
+            //    if (CheckReconnectionCounter * 100 >= CheckReconnectAfterXSeconds * 1000)
+            //    {
+            //        //try to connect
+            //        Program.fmEinstellungen.Reconnect(((MaxReconnectionsTries + 1) - TryReconnectCounter) + "/" + MaxReconnectionsTries);
+            //        TryReconnectCounter--;
+            //        CheckReconnectionCounter = 0;
+            //        this.CheckStatusCounter = 0; //to save this 1 second
+            //    }
+            //    CheckReconnectionCounter++;
+            //}
 
             this.CheckStatusCounter++;
 

@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using System.Net;
 using System.Net.Sockets;
+using TextVerteilerClient.Networking;
 
 namespace TextVerteilerClient
 {
@@ -31,6 +32,7 @@ namespace TextVerteilerClient
         {
             this.TopMost = true;
 
+            rbReconnectIfTime.Text = "nicht Wiederverbinden";
             Tooltips = new ToolTip[] { tip1 };
 
             foreach (var tip in Tooltips)
@@ -57,39 +59,48 @@ namespace TextVerteilerClient
 
         public void btnConnect_Click(object sender, EventArgs e)
         {
-            try
+            if (btnConnect.InvokeRequired)
             {
-                FormMain.TryReconnectCounter = 0;
-                FormMain.Reconnecting = false;
-                if (cbServerIps.Items.Count > 0)
-                {
-
-                    if (cbServerIps.SelectedIndex == -1)
-                    {
-                        cbServerIps.SelectedIndex = 0;
-                    }
-                    IPAddress tempIp;
-
-                    if (IPAddress.TryParse(Program.fmMain.UdpClientcontext.KnownIPs[cbServerIps.SelectedIndex], out tempIp))
-                    {
-                        Program.fmMain.SetFormText("Connecting...");
-                        Program.fmMain.Connect(tempIp,true);
-
-
-                    }
-                    else
-                    {
-                        MessageBox.Show("Unbekannter Fehler!", "Fehler");
-                    }
-
-                    btnDisconnect.Enabled = true;
-                    btnConnect.Enabled = false;
-                }
+                Action<object, EventArgs> set = new Action<object, EventArgs>(btnConnect_Click);
+                this.Invoke(set, new object[] { sender, e });
             }
-            catch (Exception)
+            else
             {
 
-                throw;
+                try
+                {
+                   // FormMain.TryReconnectCounter = 0;
+                    FormMain.Reconnecting = false;
+                    if (cbServerIps.Items.Count > 0)
+                    {
+
+                        if (cbServerIps.SelectedIndex == -1)
+                        {
+                            cbServerIps.SelectedIndex = 0;
+                        }
+                        IPAddress tempIp;
+
+
+                        if (IPAddress.TryParse(UdpClientContext.KnownIPs[cbServerIps.SelectedIndex], out tempIp))
+                        {
+                            Program.fmMain.SetFormText("Connecting...");
+                            Program.fmMain.Connect(tempIp, true);
+
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("Unbekannter Fehler!", "Fehler");
+                        }
+
+                        btnDisconnect.Enabled = true;
+                        btnConnect.Enabled = false;
+                    }
+                }
+                catch (Exception ee)
+                {
+                    MessageBox.Show(ee.Message);
+                }
             }
         }
 
@@ -106,10 +117,10 @@ namespace TextVerteilerClient
                     }
                     IPAddress tempIp;
 
-                    if (IPAddress.TryParse(Program.fmMain.UdpClientcontext.KnownIPs[cbServerIps.SelectedIndex], out tempIp))
+                    if (IPAddress.TryParse(UdpClientContext.KnownIPs[cbServerIps.SelectedIndex], out tempIp))
                     {
                         Program.fmMain.SetFormText("Reconnecting...Try " + Try);
-                        Program.fmMain.Connect(tempIp,true);
+                        Program.fmMain.Connect(tempIp, true);
 
 
                     }
@@ -149,13 +160,22 @@ namespace TextVerteilerClient
 
         public void btnDisconnect_Click(object sender, EventArgs e)
         {
-            FormMain.TryReconnectCounter = -1;
-            FormMain.Reconnecting = false;
-            Program.fmMain.DisconnectByButton();
-            Program.fmMain.SetFormText("Disconnected");
+            if (btnDisconnect.InvokeRequired)
+            {
+                Action<object, EventArgs> set = new Action<object, EventArgs>(btnDisconnect_Click);
+                this.Invoke(set, new object[] { sender, e });
+            }
+            else
+            {
+                // FormMain.TryReconnectCounter = -1;
+                FormMain.Reconnecting = false;
+                Program.fmMain.DisconnectByButton();
+                Program.fmMain.SetFormText("Disconnected");
 
-            btnConnect.Enabled = true;
-            btnDisconnect.Enabled = false;
+                btnConnect.Enabled = true;
+                btnDisconnect.Enabled = false;
+            }
+          
 
         }
 
@@ -225,18 +245,41 @@ namespace TextVerteilerClient
 
         private void numReconnectionTries_ValueChanged(object sender, EventArgs e)
         {
-            FormMain.MaxReconnectionsTries = (int)numReconnectionTries.Value;
+           // FormMain.MaxReconnectionsTries = (int)numReconnectionTries.Value;
         }
 
         private void btnStopReconnecting_Click(object sender, EventArgs e)
         {
-            FormMain.TryReconnectCounter = -1;
+           // FormMain.TryReconnectCounter = -1;
             FormMain.Reconnecting = false;
             Program.fmMain.DisconnectByButton();
             Program.fmMain.SetFormText("Disconnected");
 
             btnConnect.Enabled = true;
             btnDisconnect.Enabled = false;
+        }
+
+        private void rbReconnectIfServer_CheckedChanged(object sender, EventArgs e)
+        {
+            FormMain.WaitForServer = true;
+            Program.fmMain.StopReconnecting();
+
+            groupBoxReconnectIfTime.Enabled = false;
+        }
+
+        private void rbReconnectIfTime_CheckedChanged(object sender, EventArgs e)
+        {
+            FormMain.WaitForServer = false;
+            Program.fmMain.StopReconnecting();
+
+
+            groupBoxReconnectIfTime.Enabled = true;
+
+        }
+
+        private void cbServerIps_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UdpClientContext.SelectedIP = cbServerIps.SelectedIndex;
         }
     }
 }
