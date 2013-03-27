@@ -17,12 +17,14 @@ namespace TextVerteilerClient.Networking
 
         public static int BroadcastPort = 2222; //egal... da nur theoretischer (multicast)client
 
-        public List<string> KnownIPs = new List<string>();
+        public static List<string> KnownIPs = new List<string>();
+
+        public static int SelectedIP;
 
         public static IPEndPoint BroadcastServer = new IPEndPoint(IPAddress.Parse(Broadscast), BroadcastPort);
 
         AsyncCallback BeginReceiveUPDserver;
-
+        
 
         public UdpClientContext()
         {
@@ -54,6 +56,14 @@ namespace TextVerteilerClient.Networking
 
                     int index = (KnownIPs.FindIndex((sip) => sip == ip));
 
+                    if (FormMain.WaitForServer && FormMain.Reconnecting)
+                    {
+                        if (index == UdpClientContext.SelectedIP)
+                        {
+                            Program.fmEinstellungen.btnConnect_Click(this, new EventArgs());
+                        }
+                    }
+
                     if (index == -1) // not there
                     {
                         KnownIPs.Add(ip);
@@ -67,6 +77,8 @@ namespace TextVerteilerClient.Networking
 
                             string hostname = Dns.GetHostEntry(ip).HostName;
                             Program.fmMain.AddServerIpToCombobox(hostname);
+
+                            
 
                         }
                     }
