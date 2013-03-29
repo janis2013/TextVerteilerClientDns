@@ -64,9 +64,9 @@ namespace TextVerteilerClient.Networking
                         }
                     }
 
-                    if (index == -1) // not there
+                    if (index == -1) //ip not there
                     {
-                        KnownIPs.Add(ip);
+                       
                         //add to combobox
                         IPAddress ReadlIP;
 
@@ -75,10 +75,10 @@ namespace TextVerteilerClient.Networking
                         if (r)
                         {
 
+                            KnownIPs.Add(ip);
+
                             string hostname = Dns.GetHostEntry(ip).HostName;
                             Program.fmMain.AddServerIpToCombobox(hostname);
-
-                            
 
                         }
                     }

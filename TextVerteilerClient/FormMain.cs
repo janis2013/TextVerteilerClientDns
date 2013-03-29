@@ -53,6 +53,7 @@ namespace TextVerteilerClient
 
         public int Pointer { get; set; }
 
+        //muss mit dem Server übereinstimmen (darf nur pakete je 42000 bytes) sonst kommt nur ein teil der naricht an
         public static int MAXBits = 42000; // = 21.000 chars, da unicode 2 bytes
 
         public int LazyCounter { get; set; }//nach XX sec automatisch verstecken
@@ -194,19 +195,19 @@ namespace TextVerteilerClient
         }
 
 
-        public void AddServerIpToCombobox(string Ip)
+        public void AddServerIpToCombobox(string HostName)
         {
             if (Program.fmEinstellungen.cbServerIps.InvokeRequired)
             {
                 Action<string> set = new Action<string>(AddServerIpToCombobox);
-                this.Invoke(set, new object[] { Ip });
+                this.Invoke(set, new object[] { HostName });
             }
             else
             {
-                KnownDns.Add(Ip);
+                KnownDns.Add(HostName);
                 if (Program.fmEinstellungen.cbServerIps.Items.Count == 0)
                 {
-                    Program.fmEinstellungen.cbServerIps.Items.Add(Ip);
+                    Program.fmEinstellungen.cbServerIps.Items.Add(HostName);
                     Program.fmEinstellungen.cbServerIps.SelectedIndex = 0;
                     //connect
                     Program.fmEinstellungen.btnConnect_Click(this, new EventArgs());
@@ -214,7 +215,7 @@ namespace TextVerteilerClient
                 else
                 {
                     //just add
-                    Program.fmEinstellungen.cbServerIps.Items.Add(Ip);
+                    Program.fmEinstellungen.cbServerIps.Items.Add(HostName);
                 }
             }
         }
