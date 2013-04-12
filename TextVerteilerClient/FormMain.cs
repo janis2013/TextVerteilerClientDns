@@ -81,7 +81,9 @@ namespace TextVerteilerClient
 
         public static List<string> KnownDns = new List<string>();
 
-
+        ToolTip tip1 = new ToolTip();
+        ToolTip tip2 = new ToolTip();
+        ToolTip tip3 = new ToolTip();
 
         public FormMain()
         {
@@ -115,6 +117,24 @@ namespace TextVerteilerClient
 
             FormMain.HistoryStackSize = 20;
 
+            tip1.UseFading = false;
+            tip1.UseAnimation = false;
+            tip1.ShowAlways = false;
+            tip1.InitialDelay = 500;
+
+            tip2.UseFading = false;
+            tip2.UseAnimation = false;
+            tip2.ShowAlways = false;
+            tip2.InitialDelay = 500;
+
+            tip3.UseFading = false;
+            tip3.UseAnimation = false;
+            tip3.ShowAlways = false;
+            tip3.InitialDelay = 500;
+
+            tip1.SetToolTip(btnKopieren, "Makiert den gesamten Text und kopiert ihn in die Zwischenablage.");
+            //tip2.SetToolTip(btnNext, "Ruft den nächsten empfangenen Text ab.");
+            //tip3.SetToolTip(btnPrevious, "Ruft den zuvor empfangenen Text ab.");
 
             //string ip = Config.LoadIp();
 
@@ -557,6 +577,14 @@ namespace TextVerteilerClient
                 tbMessage.SelectAll();
             }
 
+        }
+
+
+
+        private void btnKopieren_Click(object sender, EventArgs e)
+        {
+            tbMessage.SelectAll();
+            tbMessage.Copy();
         }
 
 

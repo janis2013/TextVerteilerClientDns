@@ -38,6 +38,7 @@
             this.beendenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.UpdateTimer = new System.Windows.Forms.Timer(this.components);
             this.tbMessage = new System.Windows.Forms.RichTextBox();
+            this.btnKopieren = new System.Windows.Forms.Button();
             this.contextMenuStripMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -116,11 +117,23 @@
             this.tbMessage.Text = "";
             this.tbMessage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbMessage_KeyDown);
             // 
+            // btnKopieren
+            // 
+            this.btnKopieren.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnKopieren.Location = new System.Drawing.Point(30, 69);
+            this.btnKopieren.Name = "btnKopieren";
+            this.btnKopieren.Size = new System.Drawing.Size(56, 26);
+            this.btnKopieren.TabIndex = 10;
+            this.btnKopieren.Text = "Kopiere";
+            this.btnKopieren.UseVisualStyleBackColor = true;
+            this.btnKopieren.Click += new System.EventHandler(this.btnKopieren_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(209, 104);
+            this.Controls.Add(this.btnKopieren);
             this.Controls.Add(this.tbMessage);
             this.Controls.Add(this.btnNext);
             this.Controls.Add(this.btnPrevious);
@@ -145,6 +158,7 @@
         private System.Windows.Forms.ToolStripMenuItem einstellungenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem beendenToolStripMenuItem;
         private System.Windows.Forms.RichTextBox tbMessage;
+        private System.Windows.Forms.Button btnKopieren;
     }
 }
 
